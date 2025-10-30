@@ -34,16 +34,20 @@ function getThemeForegroundColor(): string {
   if (typeof window === 'undefined') return '#000000';
 
   const root = document.documentElement;
-  const style = getComputedStyle(root);
-  const foreground = style.getPropertyValue('--foreground').trim();
+  const isDark = root.classList.contains('dark');
+  return isDark ? '#ffffff' : '#000000';
+}
 
-  // Convert HSL to hex (foreground is in HSL format like "222.2 84% 4.9%")
-  if (foreground) {
-    const isDark = root.classList.contains('dark');
-    return isDark ? '#ffffff' : '#000000';
-  }
+/**
+ * Get the current theme's background color for icon customization.
+ * @returns The background color in hex format.
+ */
+function getThemeBackgroundColor(): string {
+  if (typeof window === 'undefined') return '#ffffff';
 
-  return '#000000';
+  const root = document.documentElement;
+  const isDark = root.classList.contains('dark');
+  return isDark ? '#000000' : '#ffffff';
 }
 
 /**
@@ -71,10 +75,11 @@ export function CustomizePanel({
   const [iconOpacity, setIconOpacity] = useState(100);
   const [backgroundOpacity, setBackgroundOpacity] = useState(100);
 
-  // Update icon color when panel opens to match current theme
+  // Update icon color and background when panel opens to match current theme
   useEffect(() => {
     if (open) {
       setIconColor(getThemeForegroundColor());
+      setBackgroundColor(getThemeBackgroundColor());
     }
   }, [open]);
 
@@ -173,8 +178,12 @@ export function CustomizePanel({
                 type="text"
                 value={iconColor}
                 onChange={(e) => setIconColor(e.target.value)}
-                className="flex-1 rounded border px-3 py-2 text-sm"
+                className="flex-1 rounded border px-3 py-2 text-base"
                 placeholder="#000000"
+                spellCheck={false}
+                autoComplete="off"
+                autoCorrect="off"
+                autoCapitalize="off"
               />
             </div>
           </div>
@@ -210,8 +219,12 @@ export function CustomizePanel({
                 type="text"
                 value={backgroundColor}
                 onChange={(e) => setBackgroundColor(e.target.value)}
-                className="flex-1 rounded border px-3 py-2 text-sm"
+                className="flex-1 rounded border px-3 py-2 text-base"
                 placeholder="#ffffff"
+                spellCheck={false}
+                autoComplete="off"
+                autoCorrect="off"
+                autoCapitalize="off"
               />
             </div>
           </div>
