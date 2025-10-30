@@ -201,9 +201,9 @@ const eslintConfig = defineConfig([
   // Relaxed rules for shadcn/ui components and utils (auto-generated code)
   {
     files: [
-      "components/ui/**/*.{ts,tsx}",
-      "components/ui/**/*.{js,jsx}",
-      "lib/utils.{ts,tsx,js,jsx}"
+      "src/components/ui/**/*.{ts,tsx}",
+      "src/components/ui/**/*.{js,jsx}",
+      "src/lib/utils.{ts,tsx,js,jsx}"
     ],
     rules: {
       "jsdoc/require-jsdoc": "off",
