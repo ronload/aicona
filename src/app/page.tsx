@@ -1,7 +1,7 @@
 'use client';
 
 import { Search } from 'lucide-react';
-import { useMemo, useState } from 'react';
+import { useDeferredValue, useMemo, useState } from 'react';
 
 import { CustomizePanel } from '@/components/customize-panel';
 import { IconGrid } from '@/components/icon-grid';
@@ -25,8 +25,17 @@ export default function Home(): React.JSX.Element {
   // Load all icons once
   const allIcons = useMemo(() => getAllIcons(), []);
 
-  // Filter icons based on search query
-  const filteredIcons = useMemo(() => searchIcons(allIcons, searchQuery), [allIcons, searchQuery]);
+  // Use deferred value for search to avoid blocking UI updates
+  const deferredSearchQuery = useDeferredValue(searchQuery);
+
+  // Filter icons based on deferred search query
+  const filteredIcons = useMemo(
+    () => searchIcons(allIcons, deferredSearchQuery),
+    [allIcons, deferredSearchQuery]
+  );
+
+  // Check if search is pending (user is typing but results haven't updated yet)
+  const isSearchPending = searchQuery !== deferredSearchQuery;
 
   /**
    * Handle icon selection and open customization panel.
@@ -78,11 +87,13 @@ export default function Home(): React.JSX.Element {
       <main className="flex-1 overflow-y-auto">
         <div className="p-4 sm:p-6">
           {filteredIcons.length > 0 ? (
-            <IconGrid
-              icons={filteredIcons}
-              selectedIcon={selectedIcon}
-              onIconSelect={handleIconSelect}
-            />
+            <div className={isSearchPending ? 'opacity-60 transition-opacity' : ''}>
+              <IconGrid
+                icons={filteredIcons}
+                selectedIcon={selectedIcon}
+                onIconSelect={handleIconSelect}
+              />
+            </div>
           ) : (
             <div className="flex min-h-[300px] items-center justify-center">
               <p className="text-muted-foreground">{t('search.noResults')}</p>
