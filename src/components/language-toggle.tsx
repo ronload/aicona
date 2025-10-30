@@ -26,17 +26,22 @@ export function LanguageToggle(): React.JSX.Element {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline" size="icon" aria-label="Toggle language">
+        <Button
+          variant="outline"
+          size="icon"
+          aria-label="Toggle language"
+          className="focus:outline-none focus-visible:ring-0 focus-visible:ring-offset-0"
+        >
           <Languages className="h-[1.2rem] w-[1.2rem]" />
           <span className="sr-only">Toggle language</span>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
+      <DropdownMenuContent align="end" className="min-w-[160px]">
         {locales.map((loc) => (
           <DropdownMenuItem
             key={loc}
             onClick={() => setLocale(loc)}
-            className={locale === loc ? 'bg-accent' : ''}
+            className={`py-3 text-base ${locale === loc ? 'bg-accent' : ''}`}
           >
             <span>{t(`language.${loc}`)}</span>
           </DropdownMenuItem>

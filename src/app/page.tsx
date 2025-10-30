@@ -1,6 +1,6 @@
 'use client';
 
-import { Search } from 'lucide-react';
+import { Search, SearchX } from 'lucide-react';
 import { useDeferredValue, useMemo, useState } from 'react';
 
 import { CustomizePanel } from '@/components/customize-panel';
@@ -69,7 +69,7 @@ export default function Home(): React.JSX.Element {
             <Input
               type="search"
               placeholder={t('search.placeholder')}
-              className="pl-9"
+              className="h-10 pl-9"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
@@ -95,7 +95,8 @@ export default function Home(): React.JSX.Element {
               />
             </div>
           ) : (
-            <div className="flex min-h-[300px] items-center justify-center">
+            <div className="flex min-h-[300px] flex-col items-center justify-center gap-4">
+              <SearchX className="h-16 w-16 text-muted-foreground" />
               <p className="text-muted-foreground">{t('search.noResults')}</p>
             </div>
           )}
