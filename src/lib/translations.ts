@@ -16,7 +16,7 @@ export const translations = {
       language: 'Language',
     },
     search: {
-      placeholder: 'Search icons...',
+      placeholder: 'Search icons (English only)',
       results: 'icons found',
       noResults: 'No icons found. Try a different search term.',
     },
@@ -59,7 +59,7 @@ export const translations = {
       language: '語言',
     },
     search: {
-      placeholder: '搜尋圖標...',
+      placeholder: '搜尋圖標（僅支援英文）',
       results: '個圖標',
       noResults: '找不到圖標。請嘗試其他搜尋關鍵字。',
     },
