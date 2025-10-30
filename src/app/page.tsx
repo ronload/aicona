@@ -1,25 +1,52 @@
 'use client';
 
+import { Search } from 'lucide-react';
+import { useMemo, useState } from 'react';
+
+import { CustomizePanel } from '@/components/customize-panel';
+import { IconGrid } from '@/components/icon-grid';
 import { useLanguage } from '@/components/language-provider';
 import { LanguageToggle } from '@/components/language-toggle';
 import { ThemeToggle } from '@/components/theme-toggle';
+import { Input } from '@/components/ui/input';
+import { getAllIcons, searchIcons, type IconData } from '@/lib/icons';
 
 /**
  * Home page component for the Aicona application.
- * Displays the main interface for icon generation and customization with i18n support.
- * @returns The home page with icon search and customization features.
+ * Features a mobile-first layout with search functionality and icon grid.
+ * @returns The home page with search bar and icon display area.
  */
 export default function Home(): React.JSX.Element {
   const { t } = useLanguage();
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedIcon, setSelectedIcon] = useState<IconData | null>(null);
+  const [panelOpen, setPanelOpen] = useState(false);
+
+  // Load all icons once
+  const allIcons = useMemo(() => getAllIcons(), []);
+
+  // Filter icons based on search query
+  const filteredIcons = useMemo(
+    () => searchIcons(allIcons, searchQuery),
+    [allIcons, searchQuery]
+  );
+
+  /**
+   * Handle icon selection and open customization panel.
+   * @param icon - The selected icon data.
+   */
+  const handleIconSelect = (icon: IconData): void => {
+    setSelectedIcon(icon);
+    setPanelOpen(true);
+  };
 
   return (
-    <div className="flex min-h-screen flex-col bg-background">
-      {/* Header */}
-      <header className="border-b px-4 py-4 sm:px-6 lg:px-8">
-        <div className="mx-auto flex max-w-7xl items-center justify-between">
-          <div className="flex items-center space-x-2">
-            <h1 className="text-2xl font-bold tracking-tight">{t('app.title')}</h1>
-            <span className="text-sm text-muted-foreground">{t('app.subtitle')}</span>
+    <div className="flex h-screen flex-col overflow-hidden bg-background">
+      {/* Header - Fixed */}
+      <header className="shrink-0 border-b">
+        <div className="flex items-center justify-between px-4 py-3 sm:px-6">
+          <div className="flex items-center gap-2">
+            <h1 className="text-lg font-bold tracking-tight sm:text-xl">{t('app.title')}</h1>
           </div>
           <div className="flex items-center gap-2">
             <LanguageToggle />
@@ -28,35 +55,47 @@ export default function Home(): React.JSX.Element {
         </div>
       </header>
 
-      {/* Main Content */}
-      <main className="flex-1 px-4 py-8 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-7xl">
-          <div className="text-center">
-            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">{t('app.description')}</h2>
-            <p className="mt-2 text-lg text-muted-foreground">{t('app.tagline')}</p>
+      {/* Search Bar - Fixed */}
+      <div className="shrink-0 bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
+        <div className="px-4 py-4 sm:px-6">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+            <Input
+              type="search"
+              placeholder={t('search.placeholder')}
+              className="pl-9"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
           </div>
+          {/* Results counter */}
+          {searchQuery && (
+            <p className="mt-2 text-sm text-muted-foreground">
+              {filteredIcons.length} {t('search.results')}
+            </p>
+          )}
+        </div>
+      </div>
 
-          {/* Placeholder for icon search and customization components */}
-          <div className="mt-12 grid gap-8 lg:grid-cols-[1fr_400px]">
-            {/* Icon Grid Placeholder */}
-            <div className="rounded-lg border border-dashed p-12 text-center">
-              <p className="text-muted-foreground">{t('placeholder.iconGrid')}</p>
+      {/* Icon Display Area - Scrollable */}
+      <main className="flex-1 overflow-y-auto">
+        <div className="p-4 sm:p-6">
+          {filteredIcons.length > 0 ? (
+            <IconGrid
+              icons={filteredIcons}
+              selectedIcon={selectedIcon}
+              onIconSelect={handleIconSelect}
+            />
+          ) : (
+            <div className="flex min-h-[300px] items-center justify-center">
+              <p className="text-muted-foreground">{t('search.noResults')}</p>
             </div>
-
-            {/* Customization Panel Placeholder */}
-            <div className="rounded-lg border border-dashed p-8">
-              <p className="text-muted-foreground">{t('placeholder.customization')}</p>
-            </div>
-          </div>
+          )}
         </div>
       </main>
 
-      {/* Footer */}
-      <footer className="border-t px-4 py-6 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-7xl text-center text-sm text-muted-foreground">
-          <p>{t('footer.credits')}</p>
-        </div>
-      </footer>
+      {/* Customization Panel */}
+      <CustomizePanel icon={selectedIcon} open={panelOpen} onOpenChange={setPanelOpen} />
     </div>
   );
 }

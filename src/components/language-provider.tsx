@@ -1,6 +1,6 @@
 'use client';
 
-import React, { createContext, useCallback, useContext, useState } from 'react';
+import React, { createContext, useCallback, useContext, useEffect, useState } from 'react';
 
 import { translations, type Locale } from '@/lib/translations';
 
@@ -15,6 +15,7 @@ const LanguageContext = createContext<LanguageContextType | undefined>(undefined
 /**
  * Language provider component that manages application locale state.
  * Provides language switching functionality and translation helper.
+ * Handles SSR hydration by loading locale from localStorage after mount.
  * @param props - The component props.
  * @param props.children - Child components that need access to language context.
  * @returns The language context provider wrapper.
@@ -24,16 +25,16 @@ export function LanguageProvider({
 }: {
   children: React.ReactNode;
 }): React.JSX.Element {
-  // Initialize locale from localStorage
-  const [locale, setLocaleState] = useState<Locale>(() => {
-    if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem('locale') as Locale | null;
-      if (saved && (saved === 'en' || saved === 'zh-TW')) {
-        return saved;
-      }
+  // Always start with default locale to avoid hydration mismatch
+  const [locale, setLocaleState] = useState<Locale>('en');
+
+  // Load saved locale from localStorage after hydration
+  useEffect(() => {
+    const saved = localStorage.getItem('locale') as Locale | null;
+    if (saved && (saved === 'en' || saved === 'zh-TW')) {
+      setLocaleState(saved);
     }
-    return 'en';
-  });
+  }, []);
 
   /**
    * Sets the current locale and persists it to localStorage.

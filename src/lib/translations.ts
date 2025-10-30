@@ -15,6 +15,21 @@ export const translations = {
       theme: 'Theme',
       language: 'Language',
     },
+    search: {
+      placeholder: 'Search icons...',
+      results: 'icons found',
+      noResults: 'No icons found. Try a different search term.',
+    },
+    customize: {
+      title: 'Customize Icon',
+      iconSize: 'Icon Size',
+      iconColor: 'Icon Color',
+      iconOpacity: 'Icon Opacity',
+      backgroundColor: 'Background Color',
+      backgroundOpacity: 'Background Opacity',
+      download: 'Download PNG',
+      downloading: 'Downloading...',
+    },
     theme: {
       light: 'Light',
       dark: 'Dark',
@@ -42,6 +57,21 @@ export const translations = {
     header: {
       theme: '主題',
       language: '語言',
+    },
+    search: {
+      placeholder: '搜尋圖標...',
+      results: '個圖標',
+      noResults: '找不到圖標。請嘗試其他搜尋關鍵字。',
+    },
+    customize: {
+      title: '客製化圖標',
+      iconSize: '圖標大小',
+      iconColor: '圖標顏色',
+      iconOpacity: '圖標透明度',
+      backgroundColor: '背景顏色',
+      backgroundOpacity: '背景透明度',
+      download: '下載 PNG',
+      downloading: '下載中...',
     },
     theme: {
       light: '亮色',
