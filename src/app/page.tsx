@@ -26,10 +26,7 @@ export default function Home(): React.JSX.Element {
   const allIcons = useMemo(() => getAllIcons(), []);
 
   // Filter icons based on search query
-  const filteredIcons = useMemo(
-    () => searchIcons(allIcons, searchQuery),
-    [allIcons, searchQuery]
-  );
+  const filteredIcons = useMemo(() => searchIcons(allIcons, searchQuery), [allIcons, searchQuery]);
 
   /**
    * Handle icon selection and open customization panel.

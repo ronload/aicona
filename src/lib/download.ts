@@ -19,15 +19,8 @@ interface DownloadOptions {
  * @param options - Download configuration options.
  */
 export async function downloadIconAsPNG(options: DownloadOptions): Promise<void> {
-  const {
-    iconSvg,
-    size,
-    iconColor,
-    backgroundColor,
-    iconOpacity,
-    backgroundOpacity,
-    fileName,
-  } = options;
+  const { iconSvg, size, iconColor, backgroundColor, iconOpacity, backgroundOpacity, fileName } =
+    options;
 
   // Create canvas
   const canvas = document.createElement('canvas');
@@ -60,38 +53,23 @@ export async function downloadIconAsPNG(options: DownloadOptions): Promise<void>
   styledSvg = styledSvg.replace(/\s+aria-[^=]*="[^"]*"/g, '');
 
   // Replace all stroke colors (including currentColor)
-  styledSvg = styledSvg.replace(
-    /stroke="currentColor"/g,
-    `stroke="${iconColor}"`
-  );
-  styledSvg = styledSvg.replace(
-    /stroke="[^"]*"/g,
-    `stroke="${iconColor}"`
-  );
+  styledSvg = styledSvg.replace(/stroke="currentColor"/g, `stroke="${iconColor}"`);
+  styledSvg = styledSvg.replace(/stroke="[^"]*"/g, `stroke="${iconColor}"`);
 
   // Ensure xmlns is present
   if (!styledSvg.includes('xmlns="http://www.w3.org/2000/svg"')) {
-    styledSvg = styledSvg.replace(
-      /<svg/,
-      '<svg xmlns="http://www.w3.org/2000/svg"'
-    );
+    styledSvg = styledSvg.replace(/<svg/, '<svg xmlns="http://www.w3.org/2000/svg"');
   }
 
   // Ensure viewBox is present
   if (!styledSvg.includes('viewBox=')) {
-    styledSvg = styledSvg.replace(
-      /<svg/,
-      '<svg viewBox="0 0 24 24"'
-    );
+    styledSvg = styledSvg.replace(/<svg/, '<svg viewBox="0 0 24 24"');
   }
 
   // Update width and height
   styledSvg = styledSvg.replace(/\s+width="[^"]*"/g, '');
   styledSvg = styledSvg.replace(/\s+height="[^"]*"/g, '');
-  styledSvg = styledSvg.replace(
-    /<svg/,
-    `<svg width="${iconSize}" height="${iconSize}"`
-  );
+  styledSvg = styledSvg.replace(/<svg/, `<svg width="${iconSize}" height="${iconSize}"`);
 
   // Convert SVG to image
   const img = new Image();
@@ -99,6 +77,9 @@ export async function downloadIconAsPNG(options: DownloadOptions): Promise<void>
   const url = URL.createObjectURL(svgBlob);
 
   return new Promise((resolve, reject) => {
+    /**
+     * Handle successful image load and draw on canvas.
+     */
     img.onload = () => {
       // Draw icon centered on canvas
       const x = (size - iconSize) / 2;
@@ -131,6 +112,9 @@ export async function downloadIconAsPNG(options: DownloadOptions): Promise<void>
       }, 'image/png');
     };
 
+    /**
+     * Handle image load failure.
+     */
     img.onerror = () => {
       URL.revokeObjectURL(url);
       reject(new Error('Failed to load SVG image'));

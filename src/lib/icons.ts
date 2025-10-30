@@ -46,9 +46,7 @@ export function searchIcons(icons: IconData[], query: string): IconData[] {
 
   const normalizedQuery = query.toLowerCase().trim();
 
-  return icons.filter((icon) =>
-    icon.name.toLowerCase().includes(normalizedQuery)
-  );
+  return icons.filter((icon) => icon.name.toLowerCase().includes(normalizedQuery));
 }
 
 /**

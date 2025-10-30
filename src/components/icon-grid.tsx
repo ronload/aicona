@@ -21,11 +21,7 @@ interface IconGridProps {
  * @param props.selectedIcon - Currently selected icon.
  * @returns The icon grid component.
  */
-export function IconGrid({
-  icons,
-  onIconSelect,
-  selectedIcon,
-}: IconGridProps): React.JSX.Element {
+export function IconGrid({ icons, onIconSelect, selectedIcon }: IconGridProps): React.JSX.Element {
   return (
     <div className="grid grid-cols-4 gap-2 sm:grid-cols-6 md:grid-cols-8 lg:grid-cols-10 xl:grid-cols-12">
       {icons.map((icon) => {

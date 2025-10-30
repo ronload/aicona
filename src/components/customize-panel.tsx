@@ -3,15 +3,20 @@
  * Provides controls for icon size, colors, and opacity settings.
  */
 
+import { Download } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 
-import { Download } from 'lucide-react';
-
+import { useLanguage } from '@/components/language-provider';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
-import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from '@/components/ui/sheet';
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+} from '@/components/ui/sheet';
 import { Slider } from '@/components/ui/slider';
-import { useLanguage } from '@/components/language-provider';
 import { downloadIconAsPNG, extractSvgFromElement } from '@/lib/download';
 import { formatIconName, type IconData } from '@/lib/icons';
 
@@ -50,7 +55,11 @@ function getThemeForegroundColor(): string {
  * @param props.onOpenChange - Callback when panel open state changes.
  * @returns The customization panel component.
  */
-export function CustomizePanel({ icon, open, onOpenChange }: CustomizePanelProps): React.JSX.Element {
+export function CustomizePanel({
+  icon,
+  open,
+  onOpenChange,
+}: CustomizePanelProps): React.JSX.Element {
   const { t } = useLanguage();
   const previewRef = useRef<HTMLDivElement>(null);
   const [isDownloading, setIsDownloading] = useState(false);
@@ -110,9 +119,7 @@ export function CustomizePanel({ icon, open, onOpenChange }: CustomizePanelProps
       <SheetContent side="bottom" className="h-[95vh] overflow-y-auto">
         <SheetHeader className="px-6">
           <SheetTitle>{t('customize.title')}</SheetTitle>
-          <SheetDescription>
-            {formatIconName(icon.name)}
-          </SheetDescription>
+          <SheetDescription>{formatIconName(icon.name)}</SheetDescription>
         </SheetHeader>
 
         <div className="mt-6 space-y-8 px-6">
@@ -124,16 +131,14 @@ export function CustomizePanel({ icon, open, onOpenChange }: CustomizePanelProps
               style={{
                 width: `${iconSize}px`,
                 height: `${iconSize}px`,
-                backgroundColor: `${backgroundColor}${Math.round((backgroundOpacity / 100) * 255).toString(16).padStart(2, '0')}`,
+                backgroundColor: `${backgroundColor}${Math.round((backgroundOpacity / 100) * 255)
+                  .toString(16)
+                  .padStart(2, '0')}`,
+                color: iconColor,
+                opacity: iconOpacity / 100,
               }}
             >
-              <Icon
-                size={iconSize * 0.7}
-                style={{
-                  color: iconColor,
-                  opacity: iconOpacity / 100,
-                }}
-              />
+              <Icon size={iconSize * 0.7} />
             </div>
           </div>
 
@@ -229,12 +234,7 @@ export function CustomizePanel({ icon, open, onOpenChange }: CustomizePanelProps
 
           {/* Download Button */}
           <div className="pt-4">
-            <Button
-              onClick={handleDownload}
-              disabled={isDownloading}
-              className="w-full"
-              size="lg"
-            >
+            <Button onClick={handleDownload} disabled={isDownloading} className="w-full" size="lg">
               <Download className="mr-2 h-5 w-5" />
               {isDownloading ? t('customize.downloading') : t('customize.download')}
             </Button>

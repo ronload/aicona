@@ -1,6 +1,13 @@
 'use client';
 
-import React, { createContext, useCallback, useContext, useEffect, useState } from 'react';
+import React, {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+  startTransition,
+} from 'react';
 
 import { translations, type Locale } from '@/lib/translations';
 
@@ -20,11 +27,7 @@ const LanguageContext = createContext<LanguageContextType | undefined>(undefined
  * @param props.children - Child components that need access to language context.
  * @returns The language context provider wrapper.
  */
-export function LanguageProvider({
-  children,
-}: {
-  children: React.ReactNode;
-}): React.JSX.Element {
+export function LanguageProvider({ children }: { children: React.ReactNode }): React.JSX.Element {
   // Always start with default locale to avoid hydration mismatch
   const [locale, setLocaleState] = useState<Locale>('en');
 
@@ -32,7 +35,10 @@ export function LanguageProvider({
   useEffect(() => {
     const saved = localStorage.getItem('locale') as Locale | null;
     if (saved && (saved === 'en' || saved === 'zh-TW')) {
-      setLocaleState(saved);
+      // Use startTransition to mark this as a non-urgent update
+      startTransition(() => {
+        setLocaleState(saved);
+      });
     }
   }, []);
 
