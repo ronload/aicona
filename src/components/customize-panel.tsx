@@ -12,7 +12,6 @@ import { Label } from '@/components/ui/label';
 import {
   Sheet,
   SheetContent,
-  SheetDescription,
   SheetHeader,
   SheetTitle,
 } from '@/components/ui/sheet';
@@ -121,15 +120,14 @@ export function CustomizePanel({
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent side="bottom" className="h-[95vh] overflow-y-auto">
+      <SheetContent side="bottom" className="h-auto overflow-y-auto">
         <SheetHeader className="px-6">
-          <SheetTitle>{t('customize.title')}</SheetTitle>
-          <SheetDescription>{formatIconName(icon.name)}</SheetDescription>
+          <SheetTitle>{formatIconName(icon.name)}</SheetTitle>
         </SheetHeader>
 
-        <div className="mt-6 space-y-8 px-6">
+        <div className="space-y-8 px-6 pb-[calc(1rem+env(safe-area-inset-bottom))]">
           {/* Icon Preview */}
-          <div className="mx-auto flex aspect-square w-[200px] items-center justify-center overflow-hidden rounded-lg border p-8">
+          <div className="mx-auto flex aspect-square w-40 items-center justify-center overflow-hidden rounded-lg border p-8">
             <div
               ref={previewRef}
               className="flex shrink-0 items-center justify-center rounded-lg transition-all"
@@ -148,7 +146,7 @@ export function CustomizePanel({
           </div>
 
           {/* Icon Size */}
-          <div className="space-y-3">
+          <div className="-mt-4 space-y-3">
             <div className="flex items-center justify-between">
               <Label htmlFor="icon-size">{t('customize.iconSize')}</Label>
               <span className="text-sm text-muted-foreground">{iconSize}px</span>
@@ -163,86 +161,92 @@ export function CustomizePanel({
             />
           </div>
 
-          {/* Icon Color */}
-          <div className="space-y-3">
-            <Label htmlFor="icon-color">{t('customize.iconColor')}</Label>
-            <div className="flex gap-3">
-              <input
-                id="icon-color"
-                type="color"
-                value={iconColor}
-                onChange={(e) => setIconColor(e.target.value)}
-                className="h-10 w-20 cursor-pointer rounded border"
-              />
-              <input
-                type="text"
-                value={iconColor}
-                onChange={(e) => setIconColor(e.target.value)}
-                className="flex-1 rounded border px-3 py-2 text-base"
-                placeholder="#000000"
-                spellCheck={false}
-                autoComplete="off"
-                autoCorrect="off"
-                autoCapitalize="off"
-              />
+          {/* Color Settings - Icon and Background */}
+          <div className="flex justify-between">
+            {/* Icon Color */}
+            <div className="flex flex-col gap-3">
+              <Label htmlFor="icon-color">{t('customize.iconColor')}</Label>
+              <div className="flex gap-2">
+                <input
+                  id="icon-color"
+                  type="color"
+                  value={iconColor}
+                  onChange={(e) => setIconColor(e.target.value)}
+                  className="h-10 w-10 shrink-0 cursor-pointer rounded border"
+                />
+                <input
+                  type="text"
+                  value={iconColor}
+                  onChange={(e) => setIconColor(e.target.value)}
+                  className="w-28 shrink-0 rounded border px-2 py-2 text-base font-mono"
+                  placeholder="#000000"
+                  spellCheck={false}
+                  autoComplete="off"
+                  autoCorrect="off"
+                  autoCapitalize="off"
+                />
+              </div>
+            </div>
+
+            {/* Background Color */}
+            <div className="flex flex-col gap-3">
+              <Label htmlFor="bg-color">{t('customize.backgroundColor')}</Label>
+              <div className="flex gap-2">
+                <input
+                  id="bg-color"
+                  type="color"
+                  value={backgroundColor}
+                  onChange={(e) => setBackgroundColor(e.target.value)}
+                  className="h-10 w-10 shrink-0 cursor-pointer rounded border"
+                />
+                <input
+                  type="text"
+                  value={backgroundColor}
+                  onChange={(e) => setBackgroundColor(e.target.value)}
+                  className="w-28 shrink-0 rounded border px-2 py-2 text-base font-mono"
+                  placeholder="#ffffff"
+                  spellCheck={false}
+                  autoComplete="off"
+                  autoCorrect="off"
+                  autoCapitalize="off"
+                />
+              </div>
             </div>
           </div>
 
-          {/* Icon Opacity */}
-          <div className="space-y-3">
-            <div className="flex items-center justify-between">
-              <Label htmlFor="icon-opacity">{t('customize.iconOpacity')}</Label>
-              <span className="text-sm text-muted-foreground">{iconOpacity}%</span>
-            </div>
-            <Slider
-              id="icon-opacity"
-              min={0}
-              max={100}
-              step={1}
-              value={[iconOpacity]}
-              onValueChange={(value) => setIconOpacity(value[0] ?? 100)}
-            />
-          </div>
-
-          {/* Background Color */}
-          <div className="space-y-3">
-            <Label htmlFor="bg-color">{t('customize.backgroundColor')}</Label>
-            <div className="flex gap-3">
-              <input
-                id="bg-color"
-                type="color"
-                value={backgroundColor}
-                onChange={(e) => setBackgroundColor(e.target.value)}
-                className="h-10 w-20 cursor-pointer rounded border"
-              />
-              <input
-                type="text"
-                value={backgroundColor}
-                onChange={(e) => setBackgroundColor(e.target.value)}
-                className="flex-1 rounded border px-3 py-2 text-base"
-                placeholder="#ffffff"
-                spellCheck={false}
-                autoComplete="off"
-                autoCorrect="off"
-                autoCapitalize="off"
+          {/* Opacity Settings - Icon and Background */}
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+            {/* Icon Opacity */}
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <Label htmlFor="icon-opacity">{t('customize.iconOpacity')}</Label>
+                <span className="text-sm text-muted-foreground">{iconOpacity}%</span>
+              </div>
+              <Slider
+                id="icon-opacity"
+                min={0}
+                max={100}
+                step={1}
+                value={[iconOpacity]}
+                onValueChange={(value) => setIconOpacity(value[0] ?? 100)}
               />
             </div>
-          </div>
 
-          {/* Background Opacity */}
-          <div className="space-y-3">
-            <div className="flex items-center justify-between">
-              <Label htmlFor="bg-opacity">{t('customize.backgroundOpacity')}</Label>
-              <span className="text-sm text-muted-foreground">{backgroundOpacity}%</span>
+            {/* Background Opacity */}
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <Label htmlFor="bg-opacity">{t('customize.backgroundOpacity')}</Label>
+                <span className="text-sm text-muted-foreground">{backgroundOpacity}%</span>
+              </div>
+              <Slider
+                id="bg-opacity"
+                min={0}
+                max={100}
+                step={1}
+                value={[backgroundOpacity]}
+                onValueChange={(value) => setBackgroundOpacity(value[0] ?? 0)}
+              />
             </div>
-            <Slider
-              id="bg-opacity"
-              min={0}
-              max={100}
-              step={1}
-              value={[backgroundOpacity]}
-              onValueChange={(value) => setBackgroundOpacity(value[0] ?? 0)}
-            />
           </div>
 
           {/* Download Button */}

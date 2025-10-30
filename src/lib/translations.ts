@@ -21,7 +21,6 @@ export const translations = {
       noResults: 'No icons found. Try a different search term.',
     },
     customize: {
-      title: 'Customize Icon',
       iconSize: 'Icon Size',
       iconColor: 'Icon Color',
       iconOpacity: 'Icon Opacity',
@@ -64,7 +63,6 @@ export const translations = {
       noResults: '找不到圖標。請嘗試其他搜尋關鍵字。',
     },
     customize: {
-      title: '客製化圖標',
       iconSize: '圖標大小',
       iconColor: '圖標顏色',
       iconOpacity: '圖標透明度',

@@ -28,7 +28,7 @@ interface IconButtonProps {
  * @param props.onClick - Callback when the icon is clicked.
  * @returns The icon button component.
  */
-const IconButton = memo<IconButtonProps>(({ icon, isSelected, onClick }) => {
+const IconButton = memo<IconButtonProps>(({ icon, onClick }) => {
   const Icon = icon.component;
   const formattedName = formatIconName(icon.name);
 
@@ -36,8 +36,7 @@ const IconButton = memo<IconButtonProps>(({ icon, isSelected, onClick }) => {
     <button
       type="button"
       onClick={() => onClick(icon)}
-      className={`group relative flex aspect-square items-center justify-center rounded-lg border p-2 transition-colors hover:bg-accent hover:text-accent-foreground ${
-        isSelected ? 'border-primary bg-primary/10 text-primary' : 'bg-card text-card-foreground'
+      className={`group relative flex aspect-square items-center justify-center rounded-lg border p-2 transition-colors hover:bg-accent hover:text-accent-foreground
       }`}
       title={formattedName}
     >
