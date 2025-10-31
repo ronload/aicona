@@ -10,12 +10,10 @@ import { formatIconName, type IconData } from '@/lib/icons';
 interface IconGridProps {
   icons: IconData[];
   onIconSelect?: (icon: IconData) => void;
-  selectedIcon?: IconData | null;
 }
 
 interface IconButtonProps {
   icon: IconData;
-  isSelected: boolean;
   onClick: (icon: IconData) => void;
 }
 
@@ -56,10 +54,9 @@ IconButton.displayName = 'IconButton';
  * @param props - Component props.
  * @param props.icons - Array of icons to display.
  * @param props.onIconSelect - Callback when an icon is clicked.
- * @param props.selectedIcon - Currently selected icon.
  * @returns The icon grid component.
  */
-export const IconGrid = memo<IconGridProps>(({ icons, onIconSelect, selectedIcon }) => {
+export const IconGrid = memo<IconGridProps>(({ icons, onIconSelect }) => {
   /**
    * Handle icon click event and delegate to parent callback.
    * @param icon - The clicked icon data.
@@ -71,12 +68,7 @@ export const IconGrid = memo<IconGridProps>(({ icons, onIconSelect, selectedIcon
   return (
     <div className="grid grid-cols-4 gap-4 sm:grid-cols-6 md:grid-cols-8 lg:grid-cols-10 xl:grid-cols-12">
       {icons.map((icon) => (
-        <IconButton
-          key={icon.name}
-          icon={icon}
-          isSelected={selectedIcon?.name === icon.name}
-          onClick={handleIconClick}
-        />
+        <IconButton key={icon.name} icon={icon} onClick={handleIconClick} />
       ))}
     </div>
   );
