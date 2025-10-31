@@ -43,6 +43,10 @@ export const translations = {
       customization: 'Customization panel will be implemented here',
     },
     footer: {
+      madeWith: 'Made with',
+      using: 'using',
+      by: 'by',
+      license: 'MIT License',
       credits: 'Open source icon generator built with Next.js and Lucide Icons',
     },
   },
@@ -85,6 +89,10 @@ export const translations = {
       customization: '客製化面板將在此實作',
     },
     footer: {
+      madeWith: '用',
+      using: '製作，使用',
+      by: '由',
+      license: 'MIT 授權',
       credits: '使用 Next.js 和 Lucide Icons 建立的開源圖標生成器',
     },
   },
