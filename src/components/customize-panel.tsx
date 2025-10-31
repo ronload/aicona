@@ -9,12 +9,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useLanguage } from '@/components/language-provider';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-} from '@/components/ui/sheet';
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { Slider } from '@/components/ui/slider';
 import { downloadIconAsPNG, extractSvgFromElement } from '@/lib/download';
 import { formatIconName, type IconData } from '@/lib/icons';
@@ -68,7 +63,7 @@ export function CustomizePanel({
   const [isDownloading, setIsDownloading] = useState(false);
 
   // Icon customization state
-  const [iconSize, setIconSize] = useState(128);
+  const [iconSize, setIconSize] = useState(70); // Changed to percentage (0-100)
   const [iconColor, setIconColor] = useState('#000000');
   const [backgroundColor, setBackgroundColor] = useState('#ffffff');
   const [iconOpacity, setIconOpacity] = useState(100);
@@ -98,7 +93,7 @@ export function CustomizePanel({
 
       await downloadIconAsPNG({
         iconSvg: svgString,
-        size: iconSize,
+        sizePercentage: iconSize,
         iconColor,
         backgroundColor,
         iconOpacity,
@@ -132,8 +127,8 @@ export function CustomizePanel({
               ref={previewRef}
               className="flex shrink-0 items-center justify-center rounded-lg transition-all"
               style={{
-                width: `${iconSize}px`,
-                height: `${iconSize}px`,
+                width: '160px',
+                height: '160px',
                 backgroundColor: `${backgroundColor}${Math.round((backgroundOpacity / 100) * 255)
                   .toString(16)
                   .padStart(2, '0')}`,
@@ -141,7 +136,7 @@ export function CustomizePanel({
                 opacity: iconOpacity / 100,
               }}
             >
-              <Icon size={iconSize * 0.7} />
+              <Icon size={160 * (iconSize / 100)} />
             </div>
           </div>
 
@@ -149,15 +144,15 @@ export function CustomizePanel({
           <div className="-mt-4 space-y-3">
             <div className="flex items-center justify-between">
               <Label htmlFor="icon-size">{t('customize.iconSize')}</Label>
-              <span className="text-sm text-muted-foreground">{iconSize}px</span>
+              <span className="text-sm text-muted-foreground">{iconSize}%</span>
             </div>
             <Slider
               id="icon-size"
-              min={32}
-              max={512}
-              step={8}
+              min={0}
+              max={100}
+              step={5}
               value={[iconSize]}
-              onValueChange={(value) => setIconSize(value[0] ?? 128)}
+              onValueChange={(value) => setIconSize(value[0] ?? 70)}
             />
           </div>
 
