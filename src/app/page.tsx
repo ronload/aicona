@@ -4,9 +4,11 @@ import { Search, SearchX } from 'lucide-react';
 import { useCallback, useDeferredValue, useMemo, useState } from 'react';
 
 import { CustomizePanel } from '@/components/customize-panel';
+import { Footer } from '@/components/footer';
 import { IconGrid } from '@/components/icon-grid';
 import { useLanguage } from '@/components/language-provider';
 import { LanguageToggle } from '@/components/language-toggle';
+import { Logo } from '@/components/logo';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { Input } from '@/components/ui/input';
 import { getAllIcons, searchIcons, type IconData } from '@/lib/icons';
@@ -52,9 +54,7 @@ export default function Home(): React.JSX.Element {
       {/* Header - Fixed */}
       <header className="shrink-0 border-b">
         <div className="flex items-center justify-between px-4 py-3 sm:px-6">
-          <div className="flex items-center gap-2">
-            <h1 className="text-lg font-bold tracking-tight sm:text-xl">{t('app.title')}</h1>
-          </div>
+          <Logo />
           <div className="flex items-center gap-2">
             <LanguageToggle />
             <ThemeToggle />
@@ -98,6 +98,9 @@ export default function Home(): React.JSX.Element {
             </div>
           )}
         </div>
+
+        {/* Footer - Scrolls with content */}
+        <Footer />
       </main>
 
       {/* Customization Panel */}
