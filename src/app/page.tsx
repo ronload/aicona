@@ -1,7 +1,7 @@
 'use client';
 
 import { Search, SearchX } from 'lucide-react';
-import { useDeferredValue, useMemo, useState } from 'react';
+import { useCallback, useDeferredValue, useMemo, useState } from 'react';
 
 import { CustomizePanel } from '@/components/customize-panel';
 import { IconGrid } from '@/components/icon-grid';
@@ -39,12 +39,13 @@ export default function Home(): React.JSX.Element {
 
   /**
    * Handle icon selection and open customization panel.
+   * Memoized to prevent unnecessary re-creations.
    * @param icon - The selected icon data.
    */
-  const handleIconSelect = (icon: IconData): void => {
+  const handleIconSelect = useCallback((icon: IconData): void => {
     setSelectedIcon(icon);
     setPanelOpen(true);
-  };
+  }, []);
 
   return (
     <div className="flex h-screen flex-col overflow-hidden bg-background">
@@ -88,11 +89,7 @@ export default function Home(): React.JSX.Element {
         <div className="p-4 sm:p-6">
           {filteredIcons.length > 0 ? (
             <div className={isSearchPending ? 'opacity-60 transition-opacity' : ''}>
-              <IconGrid
-                icons={filteredIcons}
-                selectedIcon={selectedIcon}
-                onIconSelect={handleIconSelect}
-              />
+              <IconGrid icons={filteredIcons} onIconSelect={handleIconSelect} />
             </div>
           ) : (
             <div className="flex min-h-[300px] flex-col items-center justify-center gap-4">

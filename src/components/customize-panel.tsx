@@ -4,15 +4,37 @@
  */
 
 import { Download } from 'lucide-react';
-import { useEffect, useRef, useState } from 'react';
+import { startTransition, useEffect, useRef, useState } from 'react';
 
 import { useLanguage } from '@/components/language-provider';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
-import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+} from '@/components/ui/sheet';
 import { Slider } from '@/components/ui/slider';
 import { downloadIconAsPNG, extractSvgFromElement } from '@/lib/download';
 import { formatIconName, type IconData } from '@/lib/icons';
+
+/**
+ * Check if the app is running in PWA standalone mode.
+ * @returns True if running as PWA, false otherwise.
+ */
+function useIsPWA(): boolean {
+  const [isPWA] = useState(() => {
+    if (typeof window === 'undefined') return false;
+    return (
+      window.matchMedia('(display-mode: standalone)').matches ||
+      (window.navigator as Navigator & { standalone?: boolean }).standalone === true
+    );
+  });
+
+  return isPWA;
+}
 
 interface CustomizePanelProps {
   icon: IconData | null;
@@ -61,19 +83,40 @@ export function CustomizePanel({
   const { t } = useLanguage();
   const previewRef = useRef<HTMLDivElement>(null);
   const [isDownloading, setIsDownloading] = useState(false);
+  const isPWA = useIsPWA();
+
+  // Deferred rendering: render skeleton first, then actual content
+  // This allows animation to start immediately
+  const [showContent, setShowContent] = useState(false);
 
   // Icon customization state
   const [iconSize, setIconSize] = useState(70); // Changed to percentage (0-100)
-  const [iconColor, setIconColor] = useState('#000000');
-  const [backgroundColor, setBackgroundColor] = useState('#ffffff');
   const [iconOpacity, setIconOpacity] = useState(100);
   const [backgroundOpacity, setBackgroundOpacity] = useState(100);
 
-  // Update icon color and background when panel opens to match current theme
+  // Initialize colors lazily based on theme
+  const [iconColor, setIconColor] = useState(() => getThemeForegroundColor());
+  const [backgroundColor, setBackgroundColor] = useState(() => getThemeBackgroundColor());
+
+  // Update colors when panel opens using startTransition for non-blocking updates
+  // This allows the animation to start immediately while colors update asynchronously
   useEffect(() => {
     if (open) {
-      setIconColor(getThemeForegroundColor());
-      setBackgroundColor(getThemeBackgroundColor());
+      // Use startTransition to mark color updates as non-urgent
+      // This won't block the animation from starting
+      startTransition(() => {
+        setIconColor(getThemeForegroundColor());
+        setBackgroundColor(getThemeBackgroundColor());
+      });
+
+      // Defer content rendering to allow animation to start first
+      // Using rAF + setTimeout to ensure animation has begun
+      requestAnimationFrame(() => {
+        setShowContent(true);
+      });
+    } else {
+      // Reset content visibility when panel closes
+      setShowContent(false);
     }
   }, [open]);
 
@@ -107,150 +150,165 @@ export function CustomizePanel({
     }
   };
 
-  if (!icon) {
-    return <></>;
-  }
-
-  const Icon = icon.component;
+  const Icon = icon?.component;
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent side="bottom" className="h-auto overflow-y-auto">
         <SheetHeader className="px-6">
-          <SheetTitle>{formatIconName(icon.name)}</SheetTitle>
+          <SheetTitle>{icon ? formatIconName(icon.name) : ''}</SheetTitle>
+          <SheetDescription className="sr-only">
+            Customize icon appearance with size, colors, and opacity settings
+          </SheetDescription>
         </SheetHeader>
 
         <div className="space-y-8 px-6 pb-[calc(1rem+env(safe-area-inset-bottom))]">
-          {/* Icon Preview */}
-          <div className="mx-auto flex aspect-square w-40 items-center justify-center overflow-hidden rounded-lg border p-8">
-            <div
-              ref={previewRef}
-              className="flex shrink-0 items-center justify-center rounded-lg transition-all"
-              style={{
-                width: '160px',
-                height: '160px',
-                backgroundColor: `${backgroundColor}${Math.round((backgroundOpacity / 100) * 255)
-                  .toString(16)
-                  .padStart(2, '0')}`,
-                color: iconColor,
-                opacity: iconOpacity / 100,
-              }}
-            >
-              <Icon size={160 * (iconSize / 100)} />
-            </div>
-          </div>
+          {showContent ? (
+            <>
+              {/* Icon Preview */}
+              <div className="mx-auto flex aspect-square w-40 items-center justify-center overflow-hidden rounded-lg border p-8">
+                <div
+                  ref={previewRef}
+                  className="flex shrink-0 items-center justify-center rounded-lg transition-all"
+                  style={{
+                    width: '160px',
+                    height: '160px',
+                    backgroundColor: `${backgroundColor}${Math.round(
+                      (backgroundOpacity / 100) * 255
+                    )
+                      .toString(16)
+                      .padStart(2, '0')}`,
+                    color: iconColor,
+                    opacity: iconOpacity / 100,
+                  }}
+                >
+                  {Icon && <Icon size={160 * (iconSize / 100)} />}
+                </div>
+              </div>
 
-          {/* Icon Size */}
-          <div className="-mt-4 space-y-3">
-            <div className="flex items-center justify-between">
-              <Label htmlFor="icon-size">{t('customize.iconSize')}</Label>
-              <span className="text-sm text-muted-foreground">{iconSize}%</span>
-            </div>
-            <Slider
-              id="icon-size"
-              min={0}
-              max={100}
-              step={5}
-              value={[iconSize]}
-              onValueChange={(value) => setIconSize(value[0] ?? 70)}
-            />
-          </div>
-
-          {/* Color Settings - Icon and Background */}
-          <div className="flex justify-between">
-            {/* Icon Color */}
-            <div className="flex flex-col gap-3">
-              <Label htmlFor="icon-color">{t('customize.iconColor')}</Label>
-              <div className="flex gap-2">
-                <input
-                  id="icon-color"
-                  type="color"
-                  value={iconColor}
-                  onChange={(e) => setIconColor(e.target.value)}
-                  className="h-10 w-10 shrink-0 cursor-pointer rounded border"
-                />
-                <input
-                  type="text"
-                  value={iconColor}
-                  onChange={(e) => setIconColor(e.target.value)}
-                  className="w-28 shrink-0 rounded border px-2 py-2 text-base font-mono"
-                  placeholder="#000000"
-                  spellCheck={false}
-                  autoComplete="off"
-                  autoCorrect="off"
-                  autoCapitalize="off"
+              {/* Icon Size */}
+              <div className="-mt-4 space-y-3">
+                <div className="flex items-center justify-between">
+                  <Label htmlFor="icon-size">{t('customize.iconSize')}</Label>
+                  <span className="text-sm text-muted-foreground">{iconSize}%</span>
+                </div>
+                <Slider
+                  id="icon-size"
+                  min={0}
+                  max={100}
+                  step={5}
+                  value={[iconSize]}
+                  onValueChange={(value) => setIconSize(value[0] ?? 70)}
                 />
               </div>
-            </div>
 
-            {/* Background Color */}
-            <div className="flex flex-col gap-3">
-              <Label htmlFor="bg-color">{t('customize.backgroundColor')}</Label>
-              <div className="flex gap-2">
-                <input
-                  id="bg-color"
-                  type="color"
-                  value={backgroundColor}
-                  onChange={(e) => setBackgroundColor(e.target.value)}
-                  className="h-10 w-10 shrink-0 cursor-pointer rounded border"
-                />
-                <input
-                  type="text"
-                  value={backgroundColor}
-                  onChange={(e) => setBackgroundColor(e.target.value)}
-                  className="w-28 shrink-0 rounded border px-2 py-2 text-base font-mono"
-                  placeholder="#ffffff"
-                  spellCheck={false}
-                  autoComplete="off"
-                  autoCorrect="off"
-                  autoCapitalize="off"
-                />
+              {/* Color Settings - Icon and Background */}
+              <div className="flex justify-between">
+                {/* Icon Color */}
+                <div className="flex flex-col gap-3">
+                  <Label htmlFor="icon-color">{t('customize.iconColor')}</Label>
+                  <div className="flex gap-2">
+                    <input
+                      id="icon-color"
+                      type="color"
+                      value={iconColor}
+                      onChange={(e) => setIconColor(e.target.value)}
+                      className="h-10 w-10 shrink-0 cursor-pointer rounded border"
+                    />
+                    <input
+                      type="text"
+                      value={iconColor}
+                      onChange={(e) => setIconColor(e.target.value)}
+                      className="w-28 shrink-0 rounded border px-2 py-2 text-base font-mono"
+                      placeholder="#000000"
+                      spellCheck={false}
+                      autoComplete="off"
+                      autoCorrect="off"
+                      autoCapitalize="off"
+                    />
+                  </div>
+                </div>
+
+                {/* Background Color */}
+                <div className="flex flex-col gap-3">
+                  <Label htmlFor="bg-color">{t('customize.backgroundColor')}</Label>
+                  <div className="flex gap-2">
+                    <input
+                      id="bg-color"
+                      type="color"
+                      value={backgroundColor}
+                      onChange={(e) => setBackgroundColor(e.target.value)}
+                      className="h-10 w-10 shrink-0 cursor-pointer rounded border"
+                    />
+                    <input
+                      type="text"
+                      value={backgroundColor}
+                      onChange={(e) => setBackgroundColor(e.target.value)}
+                      className="w-28 shrink-0 rounded border px-2 py-2 text-base font-mono"
+                      placeholder="#ffffff"
+                      spellCheck={false}
+                      autoComplete="off"
+                      autoCorrect="off"
+                      autoCapitalize="off"
+                    />
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
 
-          {/* Opacity Settings - Icon and Background */}
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-            {/* Icon Opacity */}
-            <div className="space-y-3">
-              <div className="flex items-center justify-between">
-                <Label htmlFor="icon-opacity">{t('customize.iconOpacity')}</Label>
-                <span className="text-sm text-muted-foreground">{iconOpacity}%</span>
+              {/* Opacity Settings - Icon and Background */}
+              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+                {/* Icon Opacity */}
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <Label htmlFor="icon-opacity">{t('customize.iconOpacity')}</Label>
+                    <span className="text-sm text-muted-foreground">{iconOpacity}%</span>
+                  </div>
+                  <Slider
+                    id="icon-opacity"
+                    min={0}
+                    max={100}
+                    step={1}
+                    value={[iconOpacity]}
+                    onValueChange={(value) => setIconOpacity(value[0] ?? 100)}
+                  />
+                </div>
+
+                {/* Background Opacity */}
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <Label htmlFor="bg-opacity">{t('customize.backgroundOpacity')}</Label>
+                    <span className="text-sm text-muted-foreground">{backgroundOpacity}%</span>
+                  </div>
+                  <Slider
+                    id="bg-opacity"
+                    min={0}
+                    max={100}
+                    step={1}
+                    value={[backgroundOpacity]}
+                    onValueChange={(value) => setBackgroundOpacity(value[0] ?? 0)}
+                  />
+                </div>
               </div>
-              <Slider
-                id="icon-opacity"
-                min={0}
-                max={100}
-                step={1}
-                value={[iconOpacity]}
-                onValueChange={(value) => setIconOpacity(value[0] ?? 100)}
-              />
-            </div>
 
-            {/* Background Opacity */}
-            <div className="space-y-3">
-              <div className="flex items-center justify-between">
-                <Label htmlFor="bg-opacity">{t('customize.backgroundOpacity')}</Label>
-                <span className="text-sm text-muted-foreground">{backgroundOpacity}%</span>
+              {/* Download Button */}
+              <div className={`pt-4 ${isPWA ? 'pb-6' : ''}`}>
+                <Button
+                  onClick={handleDownload}
+                  disabled={isDownloading}
+                  className="w-full"
+                  size="lg"
+                >
+                  <Download className="mr-2 h-5 w-5" />
+                  {isDownloading ? t('customize.downloading') : t('customize.download')}
+                </Button>
               </div>
-              <Slider
-                id="bg-opacity"
-                min={0}
-                max={100}
-                step={1}
-                value={[backgroundOpacity]}
-                onValueChange={(value) => setBackgroundOpacity(value[0] ?? 0)}
-              />
+            </>
+          ) : (
+            /* Skeleton loader - minimal content to start animation quickly */
+            <div className="flex min-h-[400px] items-center justify-center">
+              <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
             </div>
-          </div>
-
-          {/* Download Button */}
-          <div className="pt-4">
-            <Button onClick={handleDownload} disabled={isDownloading} className="w-full" size="lg">
-              <Download className="mr-2 h-5 w-5" />
-              {isDownloading ? t('customize.downloading') : t('customize.download')}
-            </Button>
-          </div>
+          )}
         </div>
       </SheetContent>
     </Sheet>
