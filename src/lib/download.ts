@@ -5,7 +5,7 @@
 
 interface DownloadOptions {
   iconSvg: string;
-  size: number;
+  sizePercentage: number; // Icon size as percentage (0-100) relative to 1024x1024 canvas
   iconColor: string;
   backgroundColor: string;
   iconOpacity: number;
@@ -16,16 +16,25 @@ interface DownloadOptions {
 /**
  * Download icon as PNG with custom styling.
  * Uses Canvas API to render the icon with specified properties.
+ * Canvas is fixed at 1024x1024 pixels.
  * @param options - Download configuration options.
  */
 export async function downloadIconAsPNG(options: DownloadOptions): Promise<void> {
-  const { iconSvg, size, iconColor, backgroundColor, iconOpacity, backgroundOpacity, fileName } =
-    options;
+  const {
+    iconSvg,
+    sizePercentage,
+    iconColor,
+    backgroundColor,
+    iconOpacity,
+    backgroundOpacity,
+    fileName,
+  } = options;
 
-  // Create canvas
+  // Fixed canvas size at 1024x1024
+  const canvasSize = 1024;
   const canvas = document.createElement('canvas');
-  canvas.width = size;
-  canvas.height = size;
+  canvas.width = canvasSize;
+  canvas.height = canvasSize;
   const ctx = canvas.getContext('2d');
 
   if (!ctx) {
@@ -38,11 +47,11 @@ export async function downloadIconAsPNG(options: DownloadOptions): Promise<void>
       .toString(16)
       .padStart(2, '0');
     ctx.fillStyle = `${backgroundColor}${alpha}`;
-    ctx.fillRect(0, 0, size, size);
+    ctx.fillRect(0, 0, canvasSize, canvasSize);
   }
 
-  // Calculate icon size (70% of canvas)
-  const iconSize = size * 0.7;
+  // Calculate icon size based on percentage
+  const iconSize = canvasSize * (sizePercentage / 100);
 
   // Clean and prepare SVG
   let styledSvg = iconSvg;
@@ -52,24 +61,33 @@ export async function downloadIconAsPNG(options: DownloadOptions): Promise<void>
   styledSvg = styledSvg.replace(/\s+class="[^"]*"/g, '');
   styledSvg = styledSvg.replace(/\s+aria-[^=]*="[^"]*"/g, '');
 
-  // Replace all stroke colors (including currentColor)
+  // Replace stroke colors (preserve "none")
   styledSvg = styledSvg.replace(/stroke="currentColor"/g, `stroke="${iconColor}"`);
-  styledSvg = styledSvg.replace(/stroke="[^"]*"/g, `stroke="${iconColor}"`);
+  styledSvg = styledSvg.replace(/stroke="(?!none)[^"]*"/g, `stroke="${iconColor}"`);
+
+  // Replace fill colors (preserve "none")
+  styledSvg = styledSvg.replace(/fill="currentColor"/g, `fill="${iconColor}"`);
+  styledSvg = styledSvg.replace(/fill="(?!none)[^"]*"/g, `fill="${iconColor}"`);
 
   // Ensure xmlns is present
   if (!styledSvg.includes('xmlns="http://www.w3.org/2000/svg"')) {
     styledSvg = styledSvg.replace(/<svg/, '<svg xmlns="http://www.w3.org/2000/svg"');
   }
 
-  // Ensure viewBox is present
-  if (!styledSvg.includes('viewBox=')) {
-    styledSvg = styledSvg.replace(/<svg/, '<svg viewBox="0 0 24 24"');
-  }
+  // Extract existing viewBox or use default
+  const viewBoxMatch = styledSvg.match(/viewBox="([^"]*)"/);
+  const viewBox = viewBoxMatch ? viewBoxMatch[1] : '0 0 24 24';
 
-  // Update width and height
-  styledSvg = styledSvg.replace(/\s+width="[^"]*"/g, '');
-  styledSvg = styledSvg.replace(/\s+height="[^"]*"/g, '');
-  styledSvg = styledSvg.replace(/<svg/, `<svg width="${iconSize}" height="${iconSize}"`);
+  // Remove only SVG tag's viewBox, width, and height (not from child elements)
+  // Match <svg...> tag and remove its attributes
+  styledSvg = styledSvg.replace(/<svg([^>]*)>/, (_match, attributes: string) => {
+    // Remove viewBox, width, height from SVG tag attributes only
+    const cleanAttributes = attributes
+      .replace(/\s+viewBox="[^"]*"/g, '')
+      .replace(/\s+width="[^"]*"/g, '')
+      .replace(/\s+height="[^"]*"/g, '');
+    return `<svg viewBox="${viewBox}" width="${iconSize}" height="${iconSize}"${cleanAttributes}>`;
+  });
 
   // Convert SVG to image
   const img = new Image();
@@ -82,8 +100,8 @@ export async function downloadIconAsPNG(options: DownloadOptions): Promise<void>
      */
     img.onload = () => {
       // Draw icon centered on canvas
-      const x = (size - iconSize) / 2;
-      const y = (size - iconSize) / 2;
+      const x = (canvasSize - iconSize) / 2;
+      const y = (canvasSize - iconSize) / 2;
 
       // Set global opacity for the icon
       ctx.globalAlpha = iconOpacity / 100;
