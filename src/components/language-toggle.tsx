@@ -1,7 +1,7 @@
 'use client';
 
 import { Languages } from 'lucide-react';
-import * as React from 'react';
+import type * as React from 'react';
 
 import { useLanguage } from '@/components/language-provider';
 import { Button } from '@/components/ui/button';
@@ -11,7 +11,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { type Locale } from '@/lib/translations';
+import type { Locale } from '@/lib/translations';
 
 const locales: Locale[] = ['en', 'zh-TW'];
 
