@@ -1,5 +1,14 @@
 # AICONA
 
+[![CI](https://github.com/ronload/aicona/actions/workflows/ci.yml/badge.svg)](https://github.com/ronload/aicona/actions/workflows/ci.yml)
+[![License: CC BY-NC 4.0](https://img.shields.io/badge/License-CC%20BY--NC%204.0-lightgrey.svg)](https://creativecommons.org/licenses/by-nc/4.0/)
+[![Next.js](https://img.shields.io/badge/Next.js-16-black?logo=nextdotjs&logoColor=white)](https://nextjs.org)
+[![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=white)](https://react.dev)
+[![TypeScript](https://img.shields.io/badge/TypeScript-6-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4-38BDF8?logo=tailwindcss&logoColor=white)](https://tailwindcss.com)
+[![Biome](https://img.shields.io/badge/Biome-2-60A5FA?logo=biome&logoColor=white)](https://biomejs.dev)
+[![pnpm](https://img.shields.io/badge/pnpm-10-F69220?logo=pnpm&logoColor=white)](https://pnpm.io)
+
 A modern, high-performance web application for generating and customizing application icons using Lucide Icons.
 
 ## Overview
@@ -42,9 +51,9 @@ AICONA is a pure frontend application that allows users to search, select, and c
 
 ### Core Technologies
 
-- **Next.js 16.0.1**: React framework with App Router
-- **React 19.2.0**: Latest React with concurrent features
-- **TypeScript 5**: Strict type checking
+- **Next.js 16**: React framework with App Router
+- **React 19**: Latest React with concurrent features
+- **TypeScript 6**: Strict type checking
 - **Tailwind CSS 4**: Utility-first styling
 
 ### UI Components
@@ -55,9 +64,8 @@ AICONA is a pure frontend application that allows users to search, select, and c
 
 ### Development Tools
 
-- **ESLint 9**: Strict linting with flat config
-- **Prettier 3.6**: Code formatting
-- **TypeScript**: Full type safety
+- **Biome 2**: Fast all-in-one linter and formatter
+- **TypeScript 6**: Full type safety
 
 ## Getting Started
 
@@ -93,11 +101,13 @@ pnpm build           # Build for production
 pnpm start           # Start production server
 
 # Code Quality
-pnpm lint            # Run ESLint
-pnpm lint:fix        # Fix ESLint errors
-pnpm format          # Format code with Prettier
+pnpm lint            # Run Biome linter
+pnpm lint:fix        # Fix Biome lint errors
+pnpm format          # Format code with Biome
 pnpm format:check    # Check code formatting
-pnpm typecheck      # Run TypeScript type checking
+pnpm check           # Run Biome lint + format checks
+pnpm check:fix       # Fix Biome lint + format issues
+pnpm typecheck       # Run TypeScript type checking
 ```
 
 ## Project Structure
@@ -111,11 +121,14 @@ aicona/
 │   │   └── globals.css        # Global styles
 │   ├── components/            # React components
 │   │   ├── ui/               # shadcn/ui components
+│   │   ├── icons/            # Custom icon components
 │   │   ├── customize-panel.tsx
+│   │   ├── footer.tsx
 │   │   ├── icon-grid.tsx
 │   │   ├── icon-grid-skeleton.tsx
 │   │   ├── language-provider.tsx
 │   │   ├── language-toggle.tsx
+│   │   ├── logo.tsx
 │   │   ├── theme-provider.tsx
 │   │   └── theme-toggle.tsx
 │   └── lib/                   # Utility functions
@@ -123,9 +136,10 @@ aicona/
 │       ├── icons.ts           # Icon management
 │       ├── translations.ts    # i18n translations
 │       └── utils.ts           # Helper functions
-├── .prettierrc.json          # Prettier configuration
-├── eslint.config.mjs         # ESLint configuration
-├── tailwind.config.ts        # Tailwind CSS configuration
+├── biome.json                # Biome lint + format configuration
+├── components.json           # shadcn/ui configuration
+├── next.config.ts            # Next.js configuration
+├── postcss.config.mjs        # PostCSS configuration
 ├── tsconfig.json             # TypeScript configuration
 └── package.json              # Project dependencies
 ```
@@ -135,7 +149,7 @@ aicona/
 ### Code Standards
 
 - **Style Guide**: Follows Airbnb JavaScript/React Style Guide
-- **ESLint**: Configured in strict mode
+- **Biome**: Strict lint and format rules
 - **JSDoc**: Required for all public functions and classes
 - **TypeScript**: Strict mode enabled with explicit return types
 
