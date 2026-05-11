@@ -57,7 +57,7 @@ AICONA is a pure frontend application that allows users to search, select, and c
 
 ### Prerequisites
 - Node.js 20 or higher
-- npm or yarn
+- pnpm 10 or higher
 
 ### Installation
 
@@ -67,10 +67,10 @@ git clone <repository-url>
 cd aicona
 
 # Install dependencies
-npm install
+pnpm install
 
 # Run development server
-npm run dev
+pnpm dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) to view the application.
@@ -79,18 +79,18 @@ Open [http://localhost:3000](http://localhost:3000) to view the application.
 
 ```bash
 # Development
-npm run dev          # Start development server
+pnpm dev             # Start development server
 
 # Production
-npm run build        # Build for production
-npm run start        # Start production server
+pnpm build           # Build for production
+pnpm start           # Start production server
 
 # Code Quality
-npm run lint         # Run ESLint
-npm run lint:fix     # Fix ESLint errors
-npm run format       # Format code with Prettier
-npm run format:check # Check code formatting
-npm run type-check   # Run TypeScript type checking
+pnpm lint            # Run ESLint
+pnpm lint:fix        # Fix ESLint errors
+pnpm format          # Format code with Prettier
+pnpm format:check    # Check code formatting
+pnpm type-check      # Run TypeScript type checking
 ```
 
 ## Project Structure
