@@ -33,3 +33,13 @@ jobs:
         env:
           PR_URL: ${{ github.event.pull_request.html_url }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Request review for non-low-risk updates
+        if: |
+          steps.metadata.outputs.update-type == 'version-update:semver-major' ||
+          (steps.metadata.outputs.update-type == 'version-update:semver-minor' &&
+           steps.metadata.outputs.dependency-type != 'direct:development')
+        run: gh pr edit "$PR_URL" --add-reviewer ronload
+        env:
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
