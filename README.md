@@ -1,7 +1,7 @@
 # AICONA
 
 [![CI](https://github.com/ronload/aicona/actions/workflows/ci.yml/badge.svg)](https://github.com/ronload/aicona/actions/workflows/ci.yml)
-[![License: CC BY-NC 4.0](https://img.shields.io/badge/License-CC%20BY--NC%204.0-lightgrey.svg)](https://creativecommons.org/licenses/by-nc/4.0/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Next.js](https://img.shields.io/badge/Next.js-16-black?logo=nextdotjs&logoColor=white)](https://nextjs.org)
 [![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=white)](https://react.dev)
 [![TypeScript](https://img.shields.io/badge/TypeScript-6-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org)
@@ -215,9 +215,9 @@ Strategic use of `React.memo`:
 
 ## License
 
-Copyright (c) 2025, Luo Yong Neng
+Copyright (c) 2026 Luo Yong Neng
 
-This software is licensed under the Creative Commons Attribution-NonCommercial 4.0 International (CC BY-NC 4.0) License.
+This software is licensed under the MIT License.
 
 See LICENSE file for details.
 
