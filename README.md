@@ -9,6 +9,7 @@ AICONA is a pure frontend application that allows users to search, select, and c
 ## Features
 
 ### Core Functionality
+
 - **Icon Search**: Search through 1640+ Lucide icons with real-time filtering
 - **Icon Customization**:
   - Adjustable icon size (32px - 512px)
@@ -19,6 +20,7 @@ AICONA is a pure frontend application that allows users to search, select, and c
 - **Export**: Download customized icons as PNG files
 
 ### User Interface
+
 - **Theme System**:
   - Light mode
   - Dark mode
@@ -31,6 +33,7 @@ AICONA is a pure frontend application that allows users to search, select, and c
 - **Responsive Design**: Mobile-first approach with desktop optimization
 
 ### Performance Optimizations
+
 - **Deferred Search**: Uses React 19's `useDeferredValue` to prevent UI blocking during search
 - **Component Memoization**: Strategic use of `React.memo` to minimize unnecessary re-renders
 - **Optimized Rendering**: Efficient handling of large icon collections
@@ -38,17 +41,20 @@ AICONA is a pure frontend application that allows users to search, select, and c
 ## Tech Stack
 
 ### Core Technologies
+
 - **Next.js 16.0.1**: React framework with App Router
 - **React 19.2.0**: Latest React with concurrent features
 - **TypeScript 5**: Strict type checking
 - **Tailwind CSS 4**: Utility-first styling
 
 ### UI Components
+
 - **shadcn/ui**: Pre-built accessible components
 - **Lucide React**: Icon library (1640+ icons)
 - **next-themes**: Theme management
 
 ### Development Tools
+
 - **ESLint 9**: Strict linting with flat config
 - **Prettier 3.6**: Code formatting
 - **TypeScript**: Full type safety
@@ -56,6 +62,7 @@ AICONA is a pure frontend application that allows users to search, select, and c
 ## Getting Started
 
 ### Prerequisites
+
 - Node.js 20 or higher
 - pnpm 10 or higher
 
@@ -90,7 +97,7 @@ pnpm lint            # Run ESLint
 pnpm lint:fix        # Fix ESLint errors
 pnpm format          # Format code with Prettier
 pnpm format:check    # Check code formatting
-pnpm typecheck       # Run TypeScript type checking
+pnpm typecheck      # Run TypeScript type checking
 ```
 
 ## Project Structure
@@ -126,24 +133,28 @@ aicona/
 ## Development Guidelines
 
 ### Code Standards
+
 - **Style Guide**: Follows Airbnb JavaScript/React Style Guide
 - **ESLint**: Configured in strict mode
 - **JSDoc**: Required for all public functions and classes
 - **TypeScript**: Strict mode enabled with explicit return types
 
 ### Component Structure
+
 - Use functional components with hooks
 - Apply `memo` for performance-critical components
 - Keep components small and focused
 - Use semantic HTML elements
 
 ### State Management
+
 - Use React hooks for local state
 - Context API for global state (theme, language)
 - Memoize expensive computations with `useMemo`
 - Defer non-critical updates with `useDeferredValue`
 
 ### Styling
+
 - Tailwind CSS utility classes
 - Mobile-first responsive design
 - Theme-aware color system
@@ -152,18 +163,23 @@ aicona/
 ## Performance Features
 
 ### Search Optimization
+
 The application uses React 19's `useDeferredValue` hook to optimize search performance:
+
 - Non-blocking UI updates during typing
 - Visual feedback with opacity transition
 - Smooth user experience even with 1640+ icons
 
 ### Component Optimization
+
 Strategic use of `React.memo`:
+
 - `IconButton`: Individual icon buttons memoized
 - `IconGrid`: Parent grid component memoized
 - Prevents unnecessary re-renders during search and selection
 
 ### Rendering Strategy
+
 - Synchronous icon loading with `useMemo`
 - Efficient filtering with deferred values
 - Minimal re-renders through proper memoization
