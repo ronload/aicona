@@ -2,14 +2,14 @@
 
 import React, {
   createContext,
+  startTransition,
   useCallback,
   useContext,
   useEffect,
   useState,
-  startTransition,
 } from 'react';
 
-import { translations, type Locale } from '@/lib/translations';
+import { type Locale, translations } from '@/lib/translations';
 
 interface LanguageContextType {
   locale: Locale;

@@ -31,8 +31,7 @@ export function Footer(): React.JSX.Element {
               >
                 Lucide Icons
               </a>
-              {t('footer.by')}{' '}
-              <span className="font-medium text-foreground">Luo Yong Neng</span>
+              {t('footer.by')} <span className="font-medium text-foreground">Luo Yong Neng</span>
             </p>
           </div>
 

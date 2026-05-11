@@ -11,7 +11,7 @@ import { LanguageToggle } from '@/components/language-toggle';
 import { Logo } from '@/components/logo';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { Input } from '@/components/ui/input';
-import { getAllIcons, searchIcons, type IconData } from '@/lib/icons';
+import { getAllIcons, type IconData, searchIcons } from '@/lib/icons';
 
 /**
  * Home page component for the Aicona application.

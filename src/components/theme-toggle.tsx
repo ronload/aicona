@@ -1,8 +1,8 @@
 'use client';
 
-import { Moon, Monitor, Sun } from 'lucide-react';
+import { Monitor, Moon, Sun } from 'lucide-react';
 import { useTheme } from 'next-themes';
-import * as React from 'react';
+import type * as React from 'react';
 
 import { Button } from '@/components/ui/button';
 import {
