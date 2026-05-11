@@ -90,7 +90,7 @@ pnpm lint            # Run ESLint
 pnpm lint:fix        # Fix ESLint errors
 pnpm format          # Format code with Prettier
 pnpm format:check    # Check code formatting
-pnpm type-check      # Run TypeScript type checking
+pnpm typecheck       # Run TypeScript type checking
 ```
 
 ## Project Structure
